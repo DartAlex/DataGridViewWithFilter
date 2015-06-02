@@ -26,6 +26,7 @@ namespace DataGridWithFilterDemo
 
             DG.Bounds = new Rectangle(10, 10, 345, 420);
             DG.Anchor = ((AnchorStyles)(((AnchorStyles.Top | AnchorStyles.Left) | AnchorStyles.Right | AnchorStyles.Bottom)));
+            DG.AllowUserToAddRows = false;
 
             this.Controls.Add(DG);
             
