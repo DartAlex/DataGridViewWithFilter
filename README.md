@@ -1,0 +1,2 @@
+# DataGridViewWithFilter
+Class DataGridViewWithFilter inherited from DataGridView
