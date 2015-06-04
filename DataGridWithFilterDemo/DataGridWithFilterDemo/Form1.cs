@@ -43,7 +43,6 @@ namespace DataGridWithFilterDemo
             DT.Rows.Add("BBB", "FFF", "7");
             DT.Rows.Add("BBB", "FFF", "8");
 
-
             DataSet DS = new DataSet();
             DS.Tables.Add(DT);
             

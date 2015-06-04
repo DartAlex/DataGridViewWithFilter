@@ -9,14 +9,3 @@ c:\users\mamchenko.as\documents\visual studio 2013\Projects\DataGridWithFilterDe
 c:\users\mamchenko.as\documents\visual studio 2013\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\obj\Debug\DataGridWithFilterDemo.csproj.GenerateResource.Cache
 c:\users\mamchenko.as\documents\visual studio 2013\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\obj\Debug\DataGridWithFilterDemo.exe
 c:\users\mamchenko.as\documents\visual studio 2013\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\obj\Debug\DataGridWithFilterDemo.pdb
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\bin\Debug\DataGridWithFilterDemo.exe.config
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\obj\Debug\DataGridWithFilterDemo.exe
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\obj\Debug\DataGridWithFilterDemo.pdb
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\bin\Debug\DataGridWithFilterDemo.exe
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\bin\Debug\DataGridWithFilterDemo.pdb
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\bin\Debug\DataGridWithFilter.dll
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\bin\Debug\DataGridWithFilter.pdb
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\obj\Debug\DataGridWithFilterDemo.csprojResolveAssemblyReference.cache
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\obj\Debug\DataGridWithFilterDemo.Form1.resources
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\obj\Debug\DataGridWithFilterDemo.Properties.Resources.resources
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilterDemo\DataGridWithFilterDemo\obj\Debug\DataGridWithFilterDemo.csproj.GenerateResource.Cache

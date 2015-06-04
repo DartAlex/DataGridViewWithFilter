@@ -39,7 +39,6 @@ namespace DataGridWithFilter
             buttonRect = new Rectangle(cellBounds.X + cellBounds.Width - width, cellBounds.Y, width, cellBounds.Height);
 
             cellLocation = cellBounds.Location;
-            // to set image/ or some other properties to the filter button look at DrawButton overloads
             ButtonRenderer.DrawButton(graphics,
                                       buttonRect,
                                       "V",

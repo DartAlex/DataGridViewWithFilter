@@ -10,15 +10,18 @@ namespace DataGridWithFilter
 {
     public class DataGridViewWithFilter : DataGridView
     {
+        // Remember checkboxes filter
         List<FilterStatus> Filter = new List<FilterStatus>();
+        // Line filter
         string StrFilter = "";
-
+        // The items in the interface
         TextBox textBoxCtrl = new TextBox();
         CheckedListBox CheckCtrl = new CheckedListBox();
         Button ApplyButtonCtrl = new Button();
         Button ClearFilterCtrl = new Button();
         ToolStripDropDown popup = new ToolStripDropDown();
 
+        // Current cell index
         private int columnIndex { get; set; }
 
         protected override void OnColumnAdded(DataGridViewColumnEventArgs e)
@@ -29,6 +32,7 @@ namespace DataGridWithFilter
             base.OnColumnAdded(e);
         }
 
+        // Event filtering buttons
         void header_FilterButtonClicked(object sender, ColumnFilterClickedEventArg e)
         {
             int widthTool = GetWhithColumn(e.ColumnIndex) + 70;
@@ -43,10 +47,10 @@ namespace DataGridWithFilter
             textBoxCtrl.TextChanged -= textBoxCtrl_TextChanged;
             textBoxCtrl.TextChanged += textBoxCtrl_TextChanged;
 
-            CheckCtrl.CheckOnClick = true;
-            CheckCtrl.Items.Add("All", CheckState.Indeterminate);
+
             CheckCtrl.ItemCheck -= CheckCtrl_ItemCheck;
             CheckCtrl.ItemCheck += CheckCtrl_ItemCheck;
+            CheckCtrl.CheckOnClick = true;
 
             GetChkFilter();
 
@@ -58,7 +62,7 @@ namespace DataGridWithFilter
             ApplyButtonCtrl.Click -= ApplyButtonCtrl_Click;
             ApplyButtonCtrl.Click += ApplyButtonCtrl_Click;
 
-            ClearFilterCtrl.Text = "Clear filtres";
+            ClearFilterCtrl.Text = "Clear filters";
             ClearFilterCtrl.Size = new System.Drawing.Size(widthTool, 30);
             ClearFilterCtrl.Click -= ClearFilterCtrl_Click;
             ClearFilterCtrl.Click += ClearFilterCtrl_Click;
@@ -100,6 +104,7 @@ namespace DataGridWithFilter
             popup.Show(this, e.ButtonRectangle.X, e.ButtonRectangle.Bottom);
         }
 
+        // Check all
         void CheckCtrl_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.Index == 0)
@@ -117,6 +122,7 @@ namespace DataGridWithFilter
             }
         }
 
+        // Clear filters
         void ClearFilterCtrl_Click(object sender, EventArgs e)
         {
             Filter.Clear();
@@ -125,11 +131,13 @@ namespace DataGridWithFilter
             popup.Close();
         }
 
+        // Event when changing the text in the TextBox
         void textBoxCtrl_TextChanged(object sender, EventArgs e)
         {
             (this.DataSource as DataTable).DefaultView.RowFilter = string.Format("[" + this.Columns[columnIndex].Name + "] LIKE '%{0}%'", textBoxCtrl.Text);
         }
 
+        // Event buttons apply
         void ApplyButtonCtrl_Click(object sender, EventArgs e)
         {
             StrFilter = "";
@@ -138,35 +146,35 @@ namespace DataGridWithFilter
             popup.Close();
         }
 
+        // Data from the selected column
         private List<string> GetDataColumns(int e)
         {
             List<string> ValueCellList = new List<string>();
             string Value;
 
+            // Search data column, excluding repetitions
             foreach (DataGridViewRow row in this.Rows)
             {
-                try
-                {
-                    Value = row.Cells[e].Value.ToString();
-                    if (!ValueCellList.Contains(Value))
-                        ValueCellList.Add(row.Cells[e].Value.ToString());
-                }
-                catch { }
-                
+                Value = row.Cells[e].Value.ToString();
+                if (!ValueCellList.Contains(Value))
+                    ValueCellList.Add(row.Cells[e].Value.ToString());
             }
             return ValueCellList;
         }
 
+        // Height of the selected column
         private int GetHeightTable()
         {
             return this.Height;
         }
 
+        // Width of the selected column
         private int GetWhithColumn(int e)
         {
             return this.Columns[e].Width;
         }
 
+        // Save filtres
         private void SaveChkFilter()
         {
             string col = this.Columns[columnIndex].Name;
@@ -175,41 +183,60 @@ namespace DataGridWithFilter
 
             Filter.RemoveAll(x => x.columnName == col);
 
-            for (int i = 0; i < CheckCtrl.Items.Count; i++)
+            for (int i = 1; i < CheckCtrl.Items.Count; i++)
             {
                 itemChk = CheckCtrl.Items[i].ToString();
                 statChk = CheckCtrl.GetItemChecked(i);
-                if (itemChk != "All")
-                {
-                    Filter.Add(new FilterStatus() { columnName = col, valueName = itemChk, check = statChk });
-                }
+                Filter.Add(new FilterStatus() { columnName = col, valueName = itemChk, check = statChk });
             }
         }
 
+        // Loading CheckBoxList
         private void GetChkFilter()
         {
-            int Count = 0;
+            List<FilterStatus> CheckList = new List<FilterStatus>();
+            List<FilterStatus> CheckListSort = new List<FilterStatus>();
+
+            // Seach saving data
             foreach (FilterStatus val in Filter)
             {
                 if (this.Columns[columnIndex].Name == val.columnName)
                 {
-                    Count++;
-                    if (val.check == true)
-                    {
-                        CheckCtrl.Items.Add(val.valueName, CheckState.Checked);
-                    }
-                    else
-                    {
-                        CheckCtrl.Items.Add(val.valueName, CheckState.Unchecked);
-                    }
+                    CheckList.Add(new FilterStatus() { columnName = "", valueName = val.valueName, check = val.check });
                 }
             }
 
-            if (Count == 0)
+            // Seach data in table
+            foreach (string ValueCell in GetDataColumns(columnIndex))
             {
-                foreach (string ValueCell in GetDataColumns(columnIndex))
+                int index = CheckList.FindIndex(item => item.valueName == ValueCell);
+                if (index == -1)
                 {
-                    CheckCtrl.Items.Add(ValueCell, CheckState.Checked);
+                    CheckList.Add(new FilterStatus { valueName = ValueCell, check = true });
+                }
+            }
+            
+            // Filtering
+            try
+            {
+                CheckListSort = CheckList.OrderBy(x => Int32.Parse(x.valueName)).ToList();
+            }
+            catch
+            {
+                CheckListSort = CheckList.OrderBy(x => x.valueName).ToList();
+            }
+            
+            // Add data in CheckBoxList
+            CheckCtrl.Items.Add("All", CheckState.Indeterminate);
+            foreach (FilterStatus val in CheckListSort)
+            {
+                if (val.check == true)
+                {
+                    CheckCtrl.Items.Add(val.valueName, CheckState.Checked);
+                }
+                else
+                {
+                    CheckCtrl.Items.Add(val.valueName, CheckState.Unchecked);
                 }
             }
         }

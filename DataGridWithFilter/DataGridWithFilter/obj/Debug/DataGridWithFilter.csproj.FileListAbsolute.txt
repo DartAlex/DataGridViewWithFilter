@@ -3,8 +3,3 @@ c:\users\mamchenko.as\documents\visual studio 2013\Projects\DataGridWithFilter\D
 c:\users\mamchenko.as\documents\visual studio 2013\Projects\DataGridWithFilter\DataGridWithFilter\obj\Debug\DataGridWithFilter.dll
 c:\users\mamchenko.as\documents\visual studio 2013\Projects\DataGridWithFilter\DataGridWithFilter\obj\Debug\DataGridWithFilter.pdb
 C:\Users\Mamchenko.as\documents\visual studio 2013\Projects\dataGridWithFilter\DataGridWithFilter\obj\Debug\DataGridWithFilter.csprojResolveAssemblyReference.cache
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilter\DataGridWithFilter\bin\Debug\DataGridWithFilter.dll
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilter\DataGridWithFilter\bin\Debug\DataGridWithFilter.pdb
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilter\DataGridWithFilter\obj\Debug\DataGridWithFilter.csprojResolveAssemblyReference.cache
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilter\DataGridWithFilter\obj\Debug\DataGridWithFilter.dll
-C:\Users\DarthAlex\Documents\Visual Studio 2015\Projects\DataGridWithFilter\DataGridWithFilter\obj\Debug\DataGridWithFilter.pdb
