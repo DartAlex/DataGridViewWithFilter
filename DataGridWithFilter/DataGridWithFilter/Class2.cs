@@ -11,12 +11,22 @@ namespace DataGridWithFilter
 {
     public class DataGridFilterHeader : DataGridViewColumnHeaderCell
     {
-        PushButtonState currentState = PushButtonState.Normal;
+        ComboBoxState currentState = ComboBoxState.Normal;
         Point cellLocation;
         Rectangle buttonRect;
 
         public event EventHandler<ColumnFilterClickedEventArg> FilterButtonClicked;
 
+        protected override void OnDataGridViewChanged()
+        {
+            try
+            {
+                Padding dropDownPadding = new Padding(0, 0, 20, 0);
+                this.Style.Padding = Padding.Add(this.InheritedStyle.Padding, dropDownPadding);
+            }
+            catch { }
+            base.OnDataGridViewChanged();
+        }
         protected override void Paint(Graphics graphics,
                                       Rectangle clipBounds,
                                       Rectangle cellBounds,
@@ -35,29 +45,22 @@ namespace DataGridWithFilter
                        formattedValue, errorText,
                        cellStyle, advancedBorderStyle, paintParts);
 
-            int width = 20; // 20 px
+            int width = 20;
             buttonRect = new Rectangle(cellBounds.X + cellBounds.Width - width, cellBounds.Y, width, cellBounds.Height);
-
             cellLocation = cellBounds.Location;
-            ButtonRenderer.DrawButton(graphics,
-                                      buttonRect,
-                                      "V",
-                                      this.DataGridView.Font,
-                                      false,
-                                      currentState);
+            ComboBoxRenderer.DrawDropDownButton(graphics, buttonRect, currentState);
         }
-
         protected override void OnMouseDown(DataGridViewCellMouseEventArgs e)
         {
             if (this.IsMouseOverButton(e.Location))
-                currentState = PushButtonState.Pressed;
+                currentState = ComboBoxState.Pressed;
             base.OnMouseDown(e);
         }
         protected override void OnMouseUp(DataGridViewCellMouseEventArgs e)
         {
             if (this.IsMouseOverButton(e.Location))
             {
-                currentState = PushButtonState.Normal;
+                currentState = ComboBoxState.Normal;
                 this.OnFilterButtonClicked();
             }
             base.OnMouseUp(e);
@@ -75,7 +78,9 @@ namespace DataGridWithFilter
         protected virtual void OnFilterButtonClicked()
         {
             if (this.FilterButtonClicked != null)
+            {
                 this.FilterButtonClicked(this, new ColumnFilterClickedEventArg(this.ColumnIndex, this.buttonRect));
+            }
         }
     }
 }

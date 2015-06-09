@@ -10,18 +10,18 @@ namespace DataGridWithFilter
 {
     public class DataGridViewWithFilter : DataGridView
     {
-        // Remember checkboxes filter
         List<FilterStatus> Filter = new List<FilterStatus>();
-        // Line filter
-        string StrFilter = "";
-        // The items in the interface
         TextBox textBoxCtrl = new TextBox();
         CheckedListBox CheckCtrl = new CheckedListBox();
         Button ApplyButtonCtrl = new Button();
         Button ClearFilterCtrl = new Button();
         ToolStripDropDown popup = new ToolStripDropDown();
 
-        // Current cell index
+        string StrFilter = "";
+        string ButtonCtrlText = "Apply";
+        string ClearFilterCtrlText = "Clear filters";
+        string CheckCtrlAllText = "All";
+
         private int columnIndex { get; set; }
 
         protected override void OnColumnAdded(DataGridViewColumnEventArgs e)
@@ -32,11 +32,10 @@ namespace DataGridWithFilter
             base.OnColumnAdded(e);
         }
 
-        // Event filtering buttons
         void header_FilterButtonClicked(object sender, ColumnFilterClickedEventArg e)
         {
-            int widthTool = GetWhithColumn(e.ColumnIndex) + 70;
-            if (widthTool < 50) widthTool = 50;
+            int widthTool = GetWhithColumn(e.ColumnIndex) + 50;
+            if (widthTool < 110) widthTool = 110;
 
             columnIndex = e.ColumnIndex;
 
@@ -47,22 +46,21 @@ namespace DataGridWithFilter
             textBoxCtrl.TextChanged -= textBoxCtrl_TextChanged;
             textBoxCtrl.TextChanged += textBoxCtrl_TextChanged;
 
-
             CheckCtrl.ItemCheck -= CheckCtrl_ItemCheck;
             CheckCtrl.ItemCheck += CheckCtrl_ItemCheck;
             CheckCtrl.CheckOnClick = true;
 
             GetChkFilter();
 
-            CheckCtrl.MaximumSize = new System.Drawing.Size(widthTool, GetHeightTable() - 100);
+            CheckCtrl.MaximumSize = new System.Drawing.Size(widthTool, GetHeightTable() - 120);
             CheckCtrl.Size = new System.Drawing.Size(widthTool, (CheckCtrl.Items.Count + 1) * 18);
 
-            ApplyButtonCtrl.Text = "Apply";
+            ApplyButtonCtrl.Text = ButtonCtrlText;
             ApplyButtonCtrl.Size = new System.Drawing.Size(widthTool, 30);
             ApplyButtonCtrl.Click -= ApplyButtonCtrl_Click;
             ApplyButtonCtrl.Click += ApplyButtonCtrl_Click;
 
-            ClearFilterCtrl.Text = "Clear filters";
+            ClearFilterCtrl.Text = ClearFilterCtrlText;
             ClearFilterCtrl.Size = new System.Drawing.Size(widthTool, 30);
             ClearFilterCtrl.Click -= ClearFilterCtrl_Click;
             ClearFilterCtrl.Click += ClearFilterCtrl_Click;
@@ -102,9 +100,9 @@ namespace DataGridWithFilter
             popup.Items.Add(host4);
 
             popup.Show(this, e.ButtonRectangle.X, e.ButtonRectangle.Bottom);
+            host2.Focus();
         }
 
-        // Check all
         void CheckCtrl_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.Index == 0)
@@ -122,7 +120,6 @@ namespace DataGridWithFilter
             }
         }
 
-        // Clear filters
         void ClearFilterCtrl_Click(object sender, EventArgs e)
         {
             Filter.Clear();
@@ -131,13 +128,11 @@ namespace DataGridWithFilter
             popup.Close();
         }
 
-        // Event when changing the text in the TextBox
         void textBoxCtrl_TextChanged(object sender, EventArgs e)
         {
             (this.DataSource as DataTable).DefaultView.RowFilter = string.Format("[" + this.Columns[columnIndex].Name + "] LIKE '%{0}%'", textBoxCtrl.Text);
         }
 
-        // Event buttons apply
         void ApplyButtonCtrl_Click(object sender, EventArgs e)
         {
             StrFilter = "";
@@ -146,13 +141,11 @@ namespace DataGridWithFilter
             popup.Close();
         }
 
-        // Data from the selected column
         private List<string> GetDataColumns(int e)
         {
             List<string> ValueCellList = new List<string>();
             string Value;
 
-            // Search data column, excluding repetitions
             foreach (DataGridViewRow row in this.Rows)
             {
                 Value = row.Cells[e].Value.ToString();
@@ -162,19 +155,16 @@ namespace DataGridWithFilter
             return ValueCellList;
         }
 
-        // Height of the selected column
         private int GetHeightTable()
         {
             return this.Height;
         }
 
-        // Width of the selected column
         private int GetWhithColumn(int e)
         {
             return this.Columns[e].Width;
         }
 
-        // Save filtres
         private void SaveChkFilter()
         {
             string col = this.Columns[columnIndex].Name;
@@ -191,13 +181,11 @@ namespace DataGridWithFilter
             }
         }
 
-        // Loading CheckBoxList
         private void GetChkFilter()
         {
             List<FilterStatus> CheckList = new List<FilterStatus>();
             List<FilterStatus> CheckListSort = new List<FilterStatus>();
 
-            // Seach saving data
             foreach (FilterStatus val in Filter)
             {
                 if (this.Columns[columnIndex].Name == val.columnName)
@@ -206,7 +194,6 @@ namespace DataGridWithFilter
                 }
             }
 
-            // Seach data in table
             foreach (string ValueCell in GetDataColumns(columnIndex))
             {
                 int index = CheckList.FindIndex(item => item.valueName == ValueCell);
@@ -215,8 +202,7 @@ namespace DataGridWithFilter
                     CheckList.Add(new FilterStatus { valueName = ValueCell, check = true });
                 }
             }
-            
-            // Filtering
+
             try
             {
                 CheckListSort = CheckList.OrderBy(x => Int32.Parse(x.valueName)).ToList();
@@ -225,9 +211,8 @@ namespace DataGridWithFilter
             {
                 CheckListSort = CheckList.OrderBy(x => x.valueName).ToList();
             }
-            
-            // Add data in CheckBoxList
-            CheckCtrl.Items.Add("All", CheckState.Indeterminate);
+
+            CheckCtrl.Items.Add(CheckCtrlAllText, CheckState.Indeterminate);
             foreach (FilterStatus val in CheckListSort)
             {
                 if (val.check == true)
@@ -240,7 +225,6 @@ namespace DataGridWithFilter
                 }
             }
         }
-
         private void ApllyFilter()
         {
             foreach (FilterStatus val in Filter)
