@@ -20,28 +20,29 @@ namespace DataGridWithFilterDemo
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.Size = new Size(380, 480);
+            this.Size = new Size(480, 480);
             
             DataGridViewWithFilter DG = new DataGridViewWithFilter();
 
-            DG.Bounds = new Rectangle(10, 10, 345, 420);
+            DG.Bounds = new Rectangle(10, 10, 445, 420);
             DG.Anchor = ((AnchorStyles)(((AnchorStyles.Top | AnchorStyles.Left) | AnchorStyles.Right | AnchorStyles.Bottom)));
             DG.AllowUserToAddRows = false;
 
             this.Controls.Add(DG);
             
             DataTable DT = new DataTable();
-            DT.Columns.Add("Column1");
-            DT.Columns.Add("Column2");
-            DT.Columns.Add("Column3");
-            DT.Rows.Add("AAA", "CCC", "1");
-            DT.Rows.Add("AAA", "CCC", "2");
-            DT.Rows.Add("AAA", "DDD", "3");
-            DT.Rows.Add("AAA", "DDD", "4");
-            DT.Rows.Add("BBB", "EEE", "5");
-            DT.Rows.Add("BBB", "EEE", "6");
-            DT.Rows.Add("BBB", "FFF", "7");
-            DT.Rows.Add("BBB", "FFF", "8");
+            DT.Columns.Add("Number", typeof(int));
+            DT.Columns.Add("Name");
+            DT.Columns.Add("Ver");
+            DT.Columns.Add("Date", typeof(DateTime));
+            DT.Rows.Add("1", "Ubuntu", "11.10", "13.10.2011");
+            DT.Rows.Add("2", "Ubuntu LTS", "12.04", "18.10.2012");
+            DT.Rows.Add("3", "Ubuntu", "12.10", "18.10.2012");
+            DT.Rows.Add("4", "Ubuntu", "13.04", "25.04.2012");
+            DT.Rows.Add("5", "Ubuntu", "13.10", "17.10.2013");
+            DT.Rows.Add("6", "Ubuntu LTS", "14.04", "23.04.2014");
+            DT.Rows.Add("7", "Ubuntu", "14.10", "23.10.2014");
+            DT.Rows.Add("8", "Ubuntu", "15.04", "23.04.2015");
 
             DataSet DS = new DataSet();
             DS.Tables.Add(DT);

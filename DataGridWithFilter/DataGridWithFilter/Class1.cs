@@ -12,6 +12,7 @@ namespace DataGridWithFilter
     {
         List<FilterStatus> Filter = new List<FilterStatus>();
         TextBox textBoxCtrl = new TextBox();
+        DateTimePicker DateTimeCtrl = new DateTimePicker();
         CheckedListBox CheckCtrl = new CheckedListBox();
         Button ApplyButtonCtrl = new Button();
         Button ClearFilterCtrl = new Button();
@@ -45,6 +46,12 @@ namespace DataGridWithFilter
             textBoxCtrl.Size = new System.Drawing.Size(widthTool, 30);
             textBoxCtrl.TextChanged -= textBoxCtrl_TextChanged;
             textBoxCtrl.TextChanged += textBoxCtrl_TextChanged;
+
+            DateTimeCtrl.Size = new System.Drawing.Size(widthTool, 30);
+            DateTimeCtrl.Format = DateTimePickerFormat.Custom;
+            DateTimeCtrl.CustomFormat = "dd.MM.yyyy";
+            DateTimeCtrl.TextChanged -= DateTimeCtrl_TextChanged;
+            DateTimeCtrl.TextChanged += DateTimeCtrl_TextChanged;
 
             CheckCtrl.ItemCheck -= CheckCtrl_ItemCheck;
             CheckCtrl.ItemCheck += CheckCtrl_ItemCheck;
@@ -94,7 +101,21 @@ namespace DataGridWithFilter
             host4.AutoSize = false;
             host4.Size = ClearFilterCtrl.Size;
 
-            popup.Items.Add(host1);
+            ToolStripControlHost host5 = new ToolStripControlHost(DateTimeCtrl);
+            host5.Margin = Padding.Empty;
+            host5.Padding = Padding.Empty;
+            host5.AutoSize = false;
+            host5.Size = DateTimeCtrl.Size;
+
+            switch (this.Columns[columnIndex].ValueType.ToString())
+            {
+                case "System.DateTime":
+                    popup.Items.Add(host5);
+                    break;
+                default:
+                    popup.Items.Add(host1);
+                    break;
+            }
             popup.Items.Add(host2);
             popup.Items.Add(host3);
             popup.Items.Add(host4);
@@ -130,7 +151,11 @@ namespace DataGridWithFilter
 
         void textBoxCtrl_TextChanged(object sender, EventArgs e)
         {
-            (this.DataSource as DataTable).DefaultView.RowFilter = string.Format("[" + this.Columns[columnIndex].Name + "] LIKE '%{0}%'", textBoxCtrl.Text);
+            (this.DataSource as DataTable).DefaultView.RowFilter = string.Format("convert([" + this.Columns[columnIndex].Name + "], 'System.String') LIKE '%{0}%'", textBoxCtrl.Text);
+        }
+        void DateTimeCtrl_TextChanged(object sender, EventArgs e)
+        {
+            (this.DataSource as DataTable).DefaultView.RowFilter = string.Format("convert([" + this.Columns[columnIndex].Name + "], 'System.String') LIKE '%{0}%'", DateTimeCtrl.Text);
         }
 
         void ApplyButtonCtrl_Click(object sender, EventArgs e)
@@ -149,6 +174,7 @@ namespace DataGridWithFilter
             foreach (DataGridViewRow row in this.Rows)
             {
                 Value = row.Cells[e].Value.ToString();
+
                 if (!ValueCellList.Contains(Value))
                     ValueCellList.Add(row.Cells[e].Value.ToString());
             }
@@ -177,7 +203,7 @@ namespace DataGridWithFilter
             {
                 itemChk = CheckCtrl.Items[i].ToString();
                 statChk = CheckCtrl.GetItemChecked(i);
-                Filter.Add(new FilterStatus() { columnName = col, valueName = itemChk, check = statChk });
+                Filter.Add(new FilterStatus() { columnName = col, valueString = itemChk, check = statChk });
             }
         }
 
@@ -190,41 +216,58 @@ namespace DataGridWithFilter
             {
                 if (this.Columns[columnIndex].Name == val.columnName)
                 {
-                    CheckList.Add(new FilterStatus() { columnName = "", valueName = val.valueName, check = val.check });
+                    CheckList.Add(new FilterStatus() { columnName = "", valueString = val.valueString, check = val.check });
                 }
             }
 
             foreach (string ValueCell in GetDataColumns(columnIndex))
             {
-                int index = CheckList.FindIndex(item => item.valueName == ValueCell);
+                int index = CheckList.FindIndex(item => item.valueString == ValueCell);
                 if (index == -1)
                 {
-                    CheckList.Add(new FilterStatus { valueName = ValueCell, check = true });
+                    CheckList.Add(new FilterStatus { valueString = ValueCell, check = true });
                 }
-            }
-
-            try
-            {
-                CheckListSort = CheckList.OrderBy(x => Int32.Parse(x.valueName)).ToList();
-            }
-            catch
-            {
-                CheckListSort = CheckList.OrderBy(x => x.valueName).ToList();
             }
 
             CheckCtrl.Items.Add(CheckCtrlAllText, CheckState.Indeterminate);
-            foreach (FilterStatus val in CheckListSort)
+
+            switch (this.Columns[columnIndex].ValueType.ToString())
             {
-                if (val.check == true)
-                {
-                    CheckCtrl.Items.Add(val.valueName, CheckState.Checked);
-                }
-                else
-                {
-                    CheckCtrl.Items.Add(val.valueName, CheckState.Unchecked);
-                }
+                case "System.Int32":
+                    CheckListSort = CheckList.OrderBy(x => Int32.Parse(x.valueString)).ToList();
+                    foreach (FilterStatus val in CheckListSort)
+                    {
+                        if (val.check == true)
+                            CheckCtrl.Items.Add(val.valueString, CheckState.Checked);
+                        else
+                            CheckCtrl.Items.Add(val.valueString, CheckState.Unchecked);
+                    }
+                    break;
+
+                case "System.DateTime":
+                    CheckListSort = CheckList.OrderBy(x => DateTime.Parse(x.valueString)).ToList();
+                    foreach (FilterStatus val in CheckListSort)
+                    {
+                        if (val.check == true)
+                            CheckCtrl.Items.Add(DateTime.Parse(val.valueString).ToString("dd.MM.yyyy"), CheckState.Checked);
+                        else
+                            CheckCtrl.Items.Add(DateTime.Parse(val.valueString).ToString("dd.MM.yyyy"), CheckState.Unchecked);
+                    }
+                    break;
+                default:
+
+                    CheckListSort = CheckList.OrderBy(x => x.valueString).ToList();
+                    foreach (FilterStatus val in CheckListSort)
+                    {
+                        if (val.check == true)
+                            CheckCtrl.Items.Add(val.valueString, CheckState.Checked);
+                        else
+                            CheckCtrl.Items.Add(val.valueString, CheckState.Unchecked);
+                    }
+                    break;
             }
         }
+
         private void ApllyFilter()
         {
             foreach (FilterStatus val in Filter)
@@ -233,11 +276,11 @@ namespace DataGridWithFilter
                 {
                     if (StrFilter.Length == 0)
                     {
-                        StrFilter = StrFilter + ("[" + val.columnName + "] <> '" + val.valueName + "' ");
+                        StrFilter = StrFilter + ("[" + val.columnName + "] <> '" + val.valueString + "' ");
                     }
                     else
                     {
-                        StrFilter = StrFilter + (" AND [" + val.columnName + "] <> '" + val.valueName + "' ");
+                        StrFilter = StrFilter + (" AND [" + val.columnName + "] <> '" + val.valueString + "' ");
                     }
                 }
             }
