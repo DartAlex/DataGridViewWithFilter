@@ -8,7 +8,7 @@ using System.Data;
 
 namespace DataGridWithFilter
 {
-    public class DataGridViewWithFilter : DataGridView
+    public class DataGridWithFilter : DataGridView
     {
         List<FilterStatus> Filter = new List<FilterStatus>();
         TextBox textBoxCtrl = new TextBox();
@@ -19,10 +19,12 @@ namespace DataGridWithFilter
         ToolStripDropDown popup = new ToolStripDropDown();
 
         string StrFilter = "";
-        string ButtonCtrlText = "Apply";
-        string ClearFilterCtrlText = "Clear filters";
-        string CheckCtrlAllText = "All";
+        string ButtonCtrlText = "Применить";
+        string ClearFilterCtrlText = "Очистить фильтры";
+        string CheckCtrlAllText = "<Выбрать всё>";
+        string SpaceText = "<Пустые>";
 
+        // Текущий индекс ячейки
         private int columnIndex { get; set; }
 
         protected override void OnColumnAdded(DataGridViewColumnEventArgs e)
@@ -33,16 +35,28 @@ namespace DataGridWithFilter
             base.OnColumnAdded(e);
         }
 
+        // Скролл после сортировки
+        public override void Sort(DataGridViewColumn dataGridViewColumn, System.ComponentModel.ListSortDirection direction)
+        {
+            int scrl = this.HorizontalScrollBar.Value;
+            int scrlOffset = this.HorizontalScrollingOffset;
+            base.Sort(dataGridViewColumn, direction);
+            this.HorizontalScrollBar.Value = scrl;
+            this.HorizontalScrollingOffset = scrlOffset;
+        }
+
+        // Событие кнопки фильтрации
         void header_FilterButtonClicked(object sender, ColumnFilterClickedEventArg e)
         {
             int widthTool = GetWhithColumn(e.ColumnIndex) + 50;
-            if (widthTool < 110) widthTool = 110;
+            if (widthTool < 130) widthTool = 130;
 
             columnIndex = e.ColumnIndex;
 
             textBoxCtrl.Clear();
             CheckCtrl.Items.Clear();
 
+            //textBoxCtrl.Text = textBoxCtrlText;
             textBoxCtrl.Size = new System.Drawing.Size(widthTool, 30);
             textBoxCtrl.TextChanged -= textBoxCtrl_TextChanged;
             textBoxCtrl.TextChanged += textBoxCtrl_TextChanged;
@@ -124,6 +138,7 @@ namespace DataGridWithFilter
             host2.Focus();
         }
 
+        // Выбор всех
         void CheckCtrl_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.Index == 0)
@@ -141,6 +156,7 @@ namespace DataGridWithFilter
             }
         }
 
+        // Очистить фильтры
         void ClearFilterCtrl_Click(object sender, EventArgs e)
         {
             Filter.Clear();
@@ -149,8 +165,10 @@ namespace DataGridWithFilter
             popup.Close();
         }
 
+        // Событие при изменении текста в TextBox
         void textBoxCtrl_TextChanged(object sender, EventArgs e)
         {
+            //if (textBoxCtrl.Text != textBoxCtrlText)       
             (this.DataSource as DataTable).DefaultView.RowFilter = string.Format("convert([" + this.Columns[columnIndex].Name + "], 'System.String') LIKE '%{0}%'", textBoxCtrl.Text);
         }
         void DateTimeCtrl_TextChanged(object sender, EventArgs e)
@@ -158,6 +176,7 @@ namespace DataGridWithFilter
             (this.DataSource as DataTable).DefaultView.RowFilter = string.Format("convert([" + this.Columns[columnIndex].Name + "], 'System.String') LIKE '%{0}%'", DateTimeCtrl.Text);
         }
 
+        // Событие кнопки применить
         void ApplyButtonCtrl_Click(object sender, EventArgs e)
         {
             StrFilter = "";
@@ -166,31 +185,37 @@ namespace DataGridWithFilter
             popup.Close();
         }
 
+        // Получаем данные из выбранной колонки 
         private List<string> GetDataColumns(int e)
         {
             List<string> ValueCellList = new List<string>();
             string Value;
 
+            // Посик данных в столбце, исключая повторения
             foreach (DataGridViewRow row in this.Rows)
             {
                 Value = row.Cells[e].Value.ToString();
+                if (Value == "") Value = SpaceText;
 
                 if (!ValueCellList.Contains(Value))
-                    ValueCellList.Add(row.Cells[e].Value.ToString());
+                    ValueCellList.Add(Value);
             }
             return ValueCellList;
         }
 
+        // Получаем высоту таблицы
         private int GetHeightTable()
         {
             return this.Height;
         }
 
+        // Получаем ширину выбранной колонки
         private int GetWhithColumn(int e)
         {
             return this.Columns[e].Width;
         }
 
+        // Запомнить чекбоксы фильтра
         private void SaveChkFilter()
         {
             string col = this.Columns[columnIndex].Name;
@@ -207,19 +232,23 @@ namespace DataGridWithFilter
             }
         }
 
+        // Загрузить чекбоксы
         private void GetChkFilter()
         {
             List<FilterStatus> CheckList = new List<FilterStatus>();
             List<FilterStatus> CheckListSort = new List<FilterStatus>();
 
+            // Посик сохранённых данных
             foreach (FilterStatus val in Filter)
             {
                 if (this.Columns[columnIndex].Name == val.columnName)
                 {
+                    if (val.valueString == "") val.valueString = SpaceText;
                     CheckList.Add(new FilterStatus() { columnName = "", valueString = val.valueString, check = val.check });
                 }
             }
 
+            // Поиск данных в таблице
             foreach (string ValueCell in GetDataColumns(columnIndex))
             {
                 int index = CheckList.FindIndex(item => item.valueString == ValueCell);
@@ -230,7 +259,7 @@ namespace DataGridWithFilter
             }
 
             CheckCtrl.Items.Add(CheckCtrlAllText, CheckState.Indeterminate);
-
+            // Сортировка
             switch (this.Columns[columnIndex].ValueType.ToString())
             {
                 case "System.Int32":
@@ -243,7 +272,6 @@ namespace DataGridWithFilter
                             CheckCtrl.Items.Add(val.valueString, CheckState.Unchecked);
                     }
                     break;
-
                 case "System.DateTime":
                     CheckListSort = CheckList.OrderBy(x => DateTime.Parse(x.valueString)).ToList();
                     foreach (FilterStatus val in CheckListSort)
@@ -255,7 +283,6 @@ namespace DataGridWithFilter
                     }
                     break;
                 default:
-
                     CheckListSort = CheckList.OrderBy(x => x.valueString).ToList();
                     foreach (FilterStatus val in CheckListSort)
                     {
@@ -268,19 +295,34 @@ namespace DataGridWithFilter
             }
         }
 
+
+        // Применить фильтр
         private void ApllyFilter()
         {
             foreach (FilterStatus val in Filter)
             {
+                if (val.valueString == SpaceText) val.valueString = "";
                 if (val.check == false)
                 {
+                    // Исключение если bool              
+                    string valueFilter = "'" + val.valueString + "' ";
+                    if (valueFilter == "True")
+                    {
+                        valueFilter = "1";
+                    }
+                    if (valueFilter == "False")
+                    {
+                        valueFilter = "0";
+                    }
+
+
                     if (StrFilter.Length == 0)
                     {
-                        StrFilter = StrFilter + ("[" + val.columnName + "] <> '" + val.valueString + "' ");
+                        StrFilter = StrFilter + ("[" + val.columnName + "] <> " + valueFilter);
                     }
                     else
                     {
-                        StrFilter = StrFilter + (" AND [" + val.columnName + "] <> '" + val.valueString + "' ");
+                        StrFilter = StrFilter + (" AND [" + val.columnName + "] <> " + valueFilter);
                     }
                 }
             }

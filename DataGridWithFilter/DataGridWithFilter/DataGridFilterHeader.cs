@@ -27,6 +27,7 @@ namespace DataGridWithFilter
             catch { }
             base.OnDataGridViewChanged();
         }
+
         protected override void Paint(Graphics graphics,
                                       Rectangle clipBounds,
                                       Rectangle cellBounds,
@@ -39,13 +40,14 @@ namespace DataGridWithFilter
                                       DataGridViewAdvancedBorderStyle advancedBorderStyle,
                                       DataGridViewPaintParts paintParts)
         {
+
             base.Paint(graphics, clipBounds,
                        cellBounds, rowIndex,
                        dataGridViewElementState, value,
                        formattedValue, errorText,
                        cellStyle, advancedBorderStyle, paintParts);
 
-            int width = 20;
+            int width = 20; // 20 px
             buttonRect = new Rectangle(cellBounds.X + cellBounds.Width - width, cellBounds.Y, width, cellBounds.Height);
             cellLocation = cellBounds.Location;
             ComboBoxRenderer.DrawDropDownButton(graphics, buttonRect, currentState);
