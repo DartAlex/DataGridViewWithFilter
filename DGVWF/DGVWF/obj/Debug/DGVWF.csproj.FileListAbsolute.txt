@@ -1,0 +1,6 @@
+C:\Users\DartAlex\source\repos\DGVWF\DGVWF\bin\Debug\DGVWF.dll
+C:\Users\DartAlex\source\repos\DGVWF\DGVWF\bin\Debug\DGVWF.pdb
+C:\Users\DartAlex\source\repos\DGVWF\DGVWF\obj\Debug\DGVWF.csprojResolveAssemblyReference.cache
+C:\Users\DartAlex\source\repos\DGVWF\DGVWF\obj\Debug\DGVWF.csproj.CoreCompileInputs.cache
+C:\Users\DartAlex\source\repos\DGVWF\DGVWF\obj\Debug\DGVWF.dll
+C:\Users\DartAlex\source\repos\DGVWF\DGVWF\obj\Debug\DGVWF.pdb

@@ -1,0 +1,12 @@
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\obj\Debug\DataGirdViewWithFilterDemo.Form1.resources
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\obj\Debug\DataGirdViewWithFilterDemo.Properties.Resources.resources
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\obj\Debug\DataGirdViewWithFilterDemo.csproj.GenerateResource.cache
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\obj\Debug\DataGirdViewWithFilterDemo.csproj.CoreCompileInputs.cache
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\bin\Debug\DataGirdViewWithFilterDemo.exe
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\bin\Debug\DataGirdViewWithFilterDemo.pdb
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\bin\Debug\DGVWF.dll
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\bin\Debug\DGVWF.pdb
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\obj\Debug\DataGirdViewWithFilterDemo.csproj.CopyComplete
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\obj\Debug\DataGirdViewWithFilterDemo.exe
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\obj\Debug\DataGirdViewWithFilterDemo.pdb
+C:\Users\DartAlex\source\repos\DataGirdViewWithFilterDemo\DataGirdViewWithFilterDemo\obj\Debug\DataGirdViewWithFilterDemo.csprojResolveAssemblyReference.cache
