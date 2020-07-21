@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -21,7 +21,7 @@ namespace DGVWF
         string ClearFilterCtrlText = "Clear filters";
         string CheckCtrlAllText = "<All>";
         string SpaceText = "<Space>";
-
+        int clear = 0;
         // Текущий индекс ячейки
         private int columnIndex { get; set; }
 
@@ -159,8 +159,11 @@ namespace DGVWF
         {
             Filter.Clear();
             StrFilter = "";
+            clear = 1;
             ApllyFilter();
             popup.Close();
+            clear = 0;
+
         }
 
         // Событие при изменении текста в TextBox
@@ -297,8 +300,12 @@ namespace DGVWF
         // Применить фильтр
         private void ApllyFilter()
         {
+            string colname = "";
+            int count = 0;
+            int testvar = 0;
             foreach (FilterStatus val in Filter)
             {
+                count++;
                 if (val.valueString == SpaceText) val.valueString = "";
                 if (val.check == false)
                 {
@@ -312,17 +319,36 @@ namespace DGVWF
                     {
                         valueFilter = "0";
                     }
-
-
                     if (StrFilter.Length == 0)
                     {
-                        StrFilter = StrFilter + ("[" + val.columnName + "] <> " + valueFilter);
+                        colname = val.columnName;
+                        StrFilter = StrFilter  + "[" + val.columnName + "]"  + " NOT IN (" + String.Format("{0}", valueFilter);
+                    }
+                    if (val.columnName != colname)
+                    {
+                        colname = "[" + val.columnName + "]";
+                        StrFilter = StrFilter + ")" + " AND " + colname + " NOT IN ( " + valueFilter;
                     }
                     else
                     {
-                        StrFilter = StrFilter + (" AND [" + val.columnName + "] <> " + valueFilter);
+                        if (testvar == 1)
+                        {
+                            StrFilter += String.Format(",{0}", valueFilter);
+
+                        }
                     }
+                    
+
                 }
+                testvar = 1;
+            }
+            if (clear == 0)
+            {
+                StrFilter = StrFilter + ")";
+            }
+            if (StrFilter == ")")
+            {
+                StrFilter = "";
             }
             (this.DataSource as DataTable).DefaultView.RowFilter = StrFilter;
         }
